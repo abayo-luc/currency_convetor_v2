@@ -8,10 +8,10 @@ export default EStyleSheet.create({
     top: 0,
     '@media ios': {
       paddingTop: 20
-    },
-    '@media android': {
-      paddingTop: StatusBar.currentHeight
     }
+    // '@media android': {
+    //   paddingTop: StatusBar.currentHeight
+    // }
   },
   button: {
     alignSelf: 'flex-end',

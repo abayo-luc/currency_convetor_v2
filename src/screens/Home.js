@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import { StatusBar, KeyboardAvoidingView } from 'react-native';
 import { Header } from '../components/Header';
 import { Container } from '../components/Container';
@@ -6,58 +8,89 @@ import { Logo } from '../components/Logo';
 import { InputWithButton } from '../components/TextInput';
 import { ClearButton } from '../components/Buttons';
 import { LastConverted } from '../components/Texts';
-
-const TEMP_BASE_CURRENCY = 'USD';
-const TEMP_QUOTE_CURRENCY = 'GBP';
-const TEMP_BASE_PRICE = '100';
-const TEMP_QUOTE_PRICE = '79.74';
-const TEMP_CONVERSION_RATE = 0.7974;
-const TEMP_CONVERSION_DATA = new Date();
+import {
+  swapCurrency,
+  changeCurrencyAmount,
+  getInitialConversions
+} from '../store/actions/currencies';
 
 class Home extends Component {
+  static propTypes = {
+    navigation: PropTypes.object
+  };
+
+  componentWillMount() {
+    this.props.getInitialConversions();
+  }
+
   handlePressBaseCurrency = () => {
-    console.log('press base currency');
+    const { navigation } = this.props;
+    navigation.navigate('CurrencyList', {
+      title: 'Base Currency',
+      type: 'base'
+    });
   };
 
   handlePressQuoteCurrency = () => {
-    console.log('press quote currency');
+    const { navigation } = this.props;
+    navigation.navigate('CurrencyList', {
+      title: 'Quote Currency',
+      type: 'quote'
+    });
   };
-  handleTextChange = text => {
-    console.log('=====>', text);
+  handleTextChange = amount => {
+    const { changeCurrencyAmount } = this.props;
+    changeCurrencyAmount(amount);
   };
 
   handleSwapCurrency = () => {
-    console.log('======>', 'swap currencies');
+    const { swapCurrency } = this.props;
+    swapCurrency();
   };
 
   handleOptionsPress = () => {
-    console.log('====>', 'handleOptions press');
+    const { navigation } = this.props;
+    navigation.navigate('Options');
   };
   render() {
+    const {
+      baseCurrency,
+      quoteCurrency,
+      amount,
+      conversionRate,
+      isFetching,
+      date,
+      primaryColor
+    } = this.props;
+    const quotePrice = isFetching
+      ? '...'
+      : (amount * conversionRate).toFixed(2);
     return (
-      <Container>
+      <Container bgColor={primaryColor}>
         <StatusBar translucent={false} barStyle="light-content" />
         <Header onPress={this.handleOptionsPress} />
         <KeyboardAvoidingView behavior="padding">
-          <Logo />
+          <Logo tintColor={primaryColor} />
           <InputWithButton
-            buttonText={TEMP_BASE_CURRENCY}
+            buttonText={baseCurrency}
             onPress={this.handlePressBaseCurrency}
             keyboardType="numeric"
-            defaultValue={TEMP_BASE_PRICE}
+            defaultValue={amount.toString()}
             onChangeText={this.handleTextChange}
+            textColor={primaryColor}
           />
           <InputWithButton
-            buttonText={TEMP_QUOTE_CURRENCY}
+            buttonText={quoteCurrency}
             editable={false}
             onPress={this.handlePressQuoteCurrency}
-            value={TEMP_QUOTE_PRICE}
+            value={quotePrice.toString()}
+            textColor={primaryColor}
           />
           <LastConverted
-            base={TEMP_BASE_CURRENCY}
-            quote={TEMP_QUOTE_CURRENCY}
-            data={TEMP_CONVERSION_DATA}
-            rate={TEMP_CONVERSION_RATE}
+            base={baseCurrency}
+            quote={quoteCurrency}
+            data={date}
+            rate={conversionRate}
           />
           <ClearButton
             text="Reverse currencies"
@@ -68,4 +101,31 @@ class Home extends Component {
     );
   }
 }
-export default Home;
+const mapStateToProps = ({ currencies, themes }) => {
+  const conversionSelector =
+    currencies.conversions[currencies.baseCurrency] || {};
+  const rates = conversionSelector.rates || {};
+  return {
+    ...currencies,
+    conversionRate: rates[currencies.quoteCurrency] || 0,
+    isFetching: conversionSelector.isFetching,
+    date: conversionSelector.date
+      ? new Date(conversionSelector.date)
+      : new Date(),
+    primaryColor: themes.primaryColor
+  };
+};
+
+Home.propTypes = {
+  baseCurrency: PropTypes.string,
+  quoteCurrency: PropTypes.string,
+  amount: PropTypes.number,
+  conversionRate: PropTypes.number,
+  isFetching: PropTypes.bool,
+  date: PropTypes.object
+};
+
+export default connect(
+  mapStateToProps,
+  { swapCurrency, changeCurrencyAmount, getInitialConversions }
+)(Home);

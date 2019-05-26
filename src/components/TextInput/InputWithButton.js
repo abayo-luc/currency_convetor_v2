@@ -5,12 +5,15 @@ import { View, Text, TouchableHighlight, TextInput } from 'react-native';
 import styles from './styles';
 
 const InputWithButton = props => {
-  const { onPress, buttonText, editable = true } = props;
+  const { onPress, buttonText, editable = true, textColor } = props;
   const containerStyles = [styles.container];
   const underlayColor = color(styles.$buttonBackgroundColorBase).darken(
     styles.$buttonBackgroundColorModifier
   );
-
+  const buttonTextStyles = [styles.buttonText];
+  if (textColor) {
+    buttonTextStyles.push({ color: textColor });
+  }
   if (!editable) {
     containerStyles.push(styles.containerDisabled);
   }
@@ -21,7 +24,7 @@ const InputWithButton = props => {
         onPress={onPress}
         style={styles.buttonContainer}
       >
-        <Text style={styles.buttonText}>{buttonText}</Text>
+        <Text style={buttonTextStyles}>{buttonText}</Text>
       </TouchableHighlight>
       <View style={styles.border} />
       <TextInput style={styles.input} {...props} />
