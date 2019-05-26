@@ -12,18 +12,27 @@ import { setConversions } from '../../utils/helpers';
 const INITIAL_STATE = {
   baseCurrency: 'USD',
   quoteCurrency: 'GBP',
-  amount: 1,
   conversions: {},
   error: null
 };
+const INPUT_INITIAL_STATE = {
+  amount: 1
+};
 
-export default (state = INITIAL_STATE, { type, payload }) => {
+export const inputs = (state = INPUT_INITIAL_STATE, { type, payload }) => {
   switch (type) {
     case CHANGE_CURRENCY_AMOUNT:
       return {
         ...state,
         amount: payload || 0
       };
+    default:
+      return state;
+  }
+};
+
+export default (state = INITIAL_STATE, { type, payload }) => {
+  switch (type) {
     case SWAP_CURRENCY:
       return {
         ...state,

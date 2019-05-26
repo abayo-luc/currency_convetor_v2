@@ -101,12 +101,13 @@ class Home extends Component {
     );
   }
 }
-const mapStateToProps = ({ currencies, themes }) => {
+const mapStateToProps = ({ currencies, themes, inputs }) => {
   const conversionSelector =
     currencies.conversions[currencies.baseCurrency] || {};
   const rates = conversionSelector.rates || {};
   return {
     ...currencies,
+    ...inputs,
     conversionRate: rates[currencies.quoteCurrency] || 0,
     isFetching: conversionSelector.isFetching,
     date: conversionSelector.date
