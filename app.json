@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "LConv",
-    "slug": "l-conv",
+    "slug": "LConv",
     "privacy": "public",
     "sdkVersion": "32.0.0",
     "platforms": ["ios", "android"],
@@ -10,8 +10,8 @@
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
-      "resizeMode": "center",
-      "backgroundColor": "#fff"
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
