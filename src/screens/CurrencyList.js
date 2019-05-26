@@ -5,15 +5,28 @@ import Currencies from '../data/currencies';
 import { FlatList, View, StatusBar } from 'react-native';
 import { ListItem, Separator } from '../components/List';
 import { changeCurrency } from '../store/actions/currencies';
+import { SearchInput } from '../components/TextInput';
+import { filterCurrencies } from '../utils/helpers';
 
 class CurrencyList extends Component {
+  state = {
+    allCurrencies: Currencies,
+    filteredCurrencies: Currencies
+  };
   handlePress = currency => {
     const { navigation, changeCurrency } = this.props;
     const { type = 'base' } = navigation.state.params;
     changeCurrency(type, currency);
     navigation.goBack(null);
   };
-
+  handleSearch = text => {
+    const { allCurrencies } = this.state;
+    const query = text.toString().toUpperCase();
+    const currencies = filterCurrencies(allCurrencies, query);
+    this.setState({
+      filteredCurrencies: currencies
+    });
+  };
   render() {
     const {
       baseCurrency,
@@ -21,6 +34,7 @@ class CurrencyList extends Component {
       navigation: { state },
       primaryColor
     } = this.props;
+    const { filteredCurrencies } = this.state;
     const currentCurrency =
       state.params.type == 'base' ? baseCurrency : quoteCurrency;
 
@@ -28,7 +42,7 @@ class CurrencyList extends Component {
       <View style={{ flex: 1 }}>
         <StatusBar barStyle="default" translucent={false} />
         <FlatList
-          data={Currencies}
+          data={filteredCurrencies}
           renderItem={({ item }) => (
             <ListItem
               text={item}
@@ -39,6 +53,12 @@ class CurrencyList extends Component {
           )}
           keyExtractor={item => item}
           ItemSeparatorComponent={Separator}
+          ListHeaderComponent={
+            <SearchInput
+              bgColor={primaryColor}
+              onChangeText={this.handleSearch}
+            />
+          }
         />
       </View>
     );

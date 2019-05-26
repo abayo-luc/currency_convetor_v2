@@ -42,5 +42,26 @@ export default EStyleSheet.create({
     fontSize: 18,
     paddingHorizontal: 8,
     color: '$inputText'
+  },
+  searchContainer: {
+    flex: 1,
+    flexDirection: 'row',
+    marginVertical: 10,
+    marginHorizontal: 20,
+    borderRadius: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  searchInput: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    color: '$darkText',
+    height: INPUT_HEIGHT * 0.8,
+    fontSize: 18
+  },
+  searchIcon: {
+    marginHorizontal: 5,
+    marginTop: 2
   }
 });

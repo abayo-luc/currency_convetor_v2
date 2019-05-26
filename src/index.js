@@ -10,7 +10,7 @@ EStyleSheet.build({
   $primaryOrange: '#D57A66',
   $primaryGreen: '#00BD9D',
   $primaryPurple: '#9E768F',
-  $primaryDark: '#000',
+  $primaryDark: '#000000',
   $white: '#fff',
   $border: '#E2E2E2',
   $inputText: '#797979',

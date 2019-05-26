@@ -1,4 +1,4 @@
 import InputWithButton from './InputWithButton';
 import styles from './styles';
-
-export { InputWithButton, styles };
+import SearchInput from './SearchInput';
+export { InputWithButton, styles, SearchInput };
